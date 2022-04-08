@@ -8,13 +8,12 @@ all: main.o tokenParser.o
 main.o: main.cpp
 	$(CC) $(FLAGS) main.cpp -c $(TEST_LIBS)
 
-tokenParser.o: tokenParser.cpp
+tokenParser.o: tokenParser.hpp tokenParser.cpp
 	$(CC) $(FLAGS) tokenParser.cpp -c
-	
 
 test: main.o tokenParser.o
-	 $(CC) $(FLAGS) main.o tokenParser.o -o test $(TEST_LIBS)
+	$(CC) $(FLAGS) main.o tokenParser.o -o test $(TEST_LIBS)
 	./test
 
 clean:
-	rm -f *.o main
+	rm -f *.o main test
