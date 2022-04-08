@@ -1,6 +1,6 @@
 #include <iostream>
 #include <gtest/gtest.h>
-#include "tokenParser.cpp"
+#include "tokenParser.hpp"
 
 class TestFoo : public ::testing::Test
 {
@@ -130,8 +130,112 @@ TEST_F(TestFoo, test_pars4){
     ASSERT_EQ(Digits.size(), DigitAns.size());
     ASSERT_EQ(Strings.size(), StrAns.size());
 }
+TEST_F(TestFoo, test_pars5) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
 
+    TokenParser TokenParser;
+    //TokenParser.SetStartCallback([&str](){str = nullptr;});
 
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+            Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+            Strings.push_back(stringToken);});
+    TokenParser.StartParsing("I l 4 3 \t \t \t \n         a l es  1 2 3 1");
+
+    std::vector <uint64_t> DigitAns1 = {4, 3, 1, 2, 3, 1};
+    std::vector <std::string> StrAns1 = {"I", "l", "a", "l", "es"};
+
+    for(size_t i = 0; i<Digits.size(); ++i) {
+        ASSERT_EQ(Digits[i], DigitAns1[i]);
+    }
+
+    for(size_t i = 0; i<Strings.size(); ++i) {
+        ASSERT_EQ(Strings[i], StrAns1[i]);
+    }
+}
+TEST_F(TestFoo, test_pars6) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
+
+    TokenParser TokenParser;
+
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+            Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+            Strings.push_back(stringToken);});
+    TokenParser.StartParsing("42str");
+    std::vector <std::string> StrAns2 = {"42str"};
+    for(size_t i = 0; i<Strings.size(); ++i) {
+        ASSERT_EQ(Strings[i], StrAns2[i]);
+    }
+}
+TEST_F(TestFoo, test_pars7) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
+
+    TokenParser TokenParser;
+
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+        Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+        Strings.push_back(stringToken);});
+    TokenParser.StartParsing("     ");
+    std::vector <std::string> StrAns2 = {"     "};
+    for(size_t i = 0; i<Strings.size(); ++i) {
+        ASSERT_EQ(Strings[i], StrAns2[i]);
+    }
+}
+TEST_F(TestFoo, test_pars8) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
+
+    TokenParser TokenParser;
+
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+            Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+            Strings.push_back(stringToken);});
+    TokenParser.StartParsing("");
+    std::vector <std::string> StrAns2 = {""};
+    for(size_t i = 0; i<Strings.size(); ++i) {
+        ASSERT_EQ(Strings[i], StrAns2[i]);
+    }
+}
+TEST_F(TestFoo, test_pars9) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
+
+    TokenParser TokenParser;
+
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+        Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+        Strings.push_back(stringToken);});
+    TokenParser.StartParsing("18446744073709551615");
+    std::vector <std::string> StrAns2 = {"18446744073709551615"};
+
+    for(size_t i = 0; i<Strings.size(); ++i) {
+        ASSERT_EQ(Strings[i], StrAns2[i]);
+    }
+}
+TEST_F(TestFoo, test_pars10) {
+    std::vector <uint64_t> Digits;
+    std::vector <std::string> Strings;
+
+    TokenParser TokenParser;
+
+    TokenParser.SetDigitTokenCallback([&Digits](uint64_t digitToken) {
+            Digits.push_back(digitToken);});
+    TokenParser.SetStringTokenCallback([&Strings](std::string stringToken) {
+            Strings.push_back(stringToken);});
+    TokenParser.StartParsing("18446744073709551614");
+    std::vector <uint64_t> DigitAns1 = {UINT64_MAX - 1};
+
+    for(size_t i = 0; i<Digits.size(); ++i) {
+        ASSERT_EQ(Digits[i], DigitAns1[i]);
+    }
+}
 int main(int argc, char *argv[])
 {
 	::testing::InitGoogleTest(&argc, argv);
