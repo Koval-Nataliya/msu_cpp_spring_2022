@@ -1,0 +1,16 @@
+CC=g++
+FLAGS=-std=c++2a -Wall -pedantic -Wextra -Werror
+TEST_LIBS=-lgtest_main -lgtest -lpthread
+
+all: main.o
+	$(CC) $(FLAGS) main.o -o main $(TEST_LIBS)
+	
+main.o:
+	$(CC) $(FLAGS) main.cpp -c $(TEST_LIBS)
+
+test: main.o
+	g++ --std=c++2a main.o -o test $(TEST_LIBS)
+	./test
+
+clean:
+	rm -f *.o main test
